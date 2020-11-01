@@ -5,86 +5,124 @@
         <div *ngFor="let comments of commentsFromService">
           <div class="bg-white p-2">
             <div class="d-flex flex-row user-info">
-              <div class="first-letter ">
-                {{comments.name.toUpperCase()[0]}}
+              <div class="first-letter">
+                {{ comments.name.toUpperCase()[0] }}
               </div>
               <div class="d-flex flex-column justify-content-start ml-2">
-                <span class="d-block font-weight-bold name">{{comments.name}}</span
-                ><span class="date text-black-50"
-                  >{{comments.comment_timestamp}}</span
-                >
+                <span class="d-block font-weight-bold name">{{
+                  comments.name
+                }}</span
+                ><span class="date text-black-50">{{
+                  comments.comment_timestamp
+                }}</span>
               </div>
             </div>
             <div class="mt-2 comment-reply-margin">
               <p class="comment-text">
-                {{comments.comment}}
+                {{ comments.comment }}
               </p>
             </div>
           </div>
           <div class="bg-white comment-reply-padding" *ngIf="loggedInUser">
             <div class="d-flex flex-row fs-12">
-              <div class="like p-2 cursor" [ngClass]="{'selected':comments.commentLikedByLoggedInUser}">
-                <i class="fa fa-thumbs-o-up"></i><span class="ml-1" >Like</span>
+              <div
+                class="like p-2 cursor"
+                [ngClass]="{ selected: comments.commentLikedByLoggedInUser }"
+                (click)="likeDislikeComment(comments.id, true)"
+              >
+                <i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span>
               </div>
-              <div class="like p-2 cursor" [ngClass]="{'selected':comments.commentDislikedByLoggedInUser}">
-                <i class="fa fa-thumbs-o-down"></i><span class="ml-1">Dislike</span>
+              <div
+                class="like p-2 cursor"
+                [ngClass]="{ selected: comments.commentDislikedByLoggedInUser }"
+                (click)="likeDislikeComment(comments.id, false)"
+              >
+                <i class="fa fa-thumbs-o-down"></i
+                ><span class="ml-1">Dislike</span>
               </div>
-              <div class="like p-2 cursor">
+              <div
+                class="like p-2 cursor"
+                (click)="addCommentBoxBelow('comment_' + comments.id)"
+              >
+                <!-- <a href="comments#commentbox"><i class="fa fa-commenting-o"></i
+                ><span class="ml-1">Comment</span></a> -->
                 <i class="fa fa-commenting-o"></i
                 ><span class="ml-1">Comment</span>
               </div>
               
             </div>
           </div>
+          <!-- <div *ngIf="currentReplyCommentBoxId==='comment_' + comments.id">
+            <ng-template #dynamicInsertCommentBox></ng-template>
+          </div> -->
           <!-- for replies start -->
           <div class="bg-white px-4" *ngFor="let replies of comments.replies">
-            <div class="bg-white p-2">
+            <div class="bg-white px-4" *ngIf="replies.reply_type == 'R'">
               <div class="d-flex flex-row user-info">
-                <div class="first-letter ">
-                  {{replies.name.toUpperCase()[0]}}
+                <div class="first-letter">
+                  {{ replies.name.toUpperCase()[0] }}
                 </div>
                 <div class="d-flex flex-column justify-content-start ml-2">
-                  <span class="d-block font-weight-bold name">{{comments.name}}</span
-                  ><span class="date text-black-50"
-                    >{{replies.reply_timestamp}}</span
-                  >
+                  <span class="d-block font-weight-bold name">{{
+                    comments.name
+                  }}</span
+                  ><span class="date text-black-50">{{
+                    replies.reply_timestamp
+                  }}</span>
                 </div>
               </div>
               <div class="mt-2 comment-reply-margin">
                 <p class="comment-text">
-                  {{replies.reply}}
+                  {{ replies.reply }}
                 </p>
               </div>
             </div>
-            <div class="bg-white comment-reply-padding" *ngIf="loggedInUser">
+            <div
+              class="bg-white comment-reply-padding"
+              *ngIf="loggedInUser && replies.reply_type == 'R'"
+            >
               <div class="d-flex flex-row fs-12">
-                <div class="like p-2 cursor" [ngClass]="{'selected':comments.commentLikedByLoggedInUser}">
-                  <i class="fa fa-thumbs-o-up"></i><span class="ml-1" >Like</span>
+                <div
+                  class="like p-2 cursor"
+                  [ngClass]="{ selected: replies.replyLikedByLoggedInUser }"
+                  (click)="likeDislikeReply(comments.id,replies.id, true)"
+                >
+                  <i class="fa fa-thumbs-o-up"></i
+                  ><span class="ml-1">Like</span>
                 </div>
-                <div class="like p-2 cursor" [ngClass]="{'selected':comments.commentDislikedByLoggedInUser}">
-                  <i class="fa fa-thumbs-o-down"></i><span class="ml-1">Dislike</span>
+                <div
+                  class="like p-2 cursor"
+                  [ngClass]="{ selected: replies.replyDislikedByLoggedInUser }"
+                (click)="likeDislikeReply(comments.id,replies.id, false)"
+                >
+                  <i class="fa fa-thumbs-o-down"></i
+                  ><span class="ml-1">Dislike</span>
                 </div>
-                <div class="like p-2 cursor">
-                  <i class="fa fa-commenting-o"></i
-                  ><span class="ml-1">Comment</span>
-                </div>
-                
               </div>
             </div>
           </div>
+          <div class="bg-white pl-4" *ngIf="currentReplyCommentBoxId==='comment_' + comments.id">
+            <ng-template #dynamicInsertCommentBox></ng-template>
+          </div>
           <!-- for replies end -->
         </div>
-        <div class="bg-light p-2" *ngIf="loggedInUser">
+        <div class="bg-light p-2" *ngIf="loggedInUser" id="commentbox">
           <div class="d-flex flex-row align-items-start">
             <div class="first-letter rounded-circle">
-              {{loggedInUser.toUpperCase()[0]}}
+              {{ loggedInUser.toUpperCase()[0] }}
             </div>
             <textarea
               class="form-control ml-1 shadow-none textarea"
-            ></textarea> 
+              [(ngModel)]="newComment"
+            ></textarea>
           </div>
           <div class="mt-2 text-right">
-            <button class="btn btn-primary btn-sm shadow-none" type="button">
+            <button
+              class="btn btn-primary btn-sm shadow-none"
+              type="button"
+              (click)="createNewComment()"
+              [disabled]="newComment == null || newComment == ''"
+            >
               Post comment</button
             ><button
               class="btn btn-outline-primary btn-sm ml-1 shadow-none"

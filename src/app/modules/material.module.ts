@@ -35,6 +35,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
+import {ClipboardModule} from '@angular/cdk/clipboard';
+
 
 @NgModule( {
     imports: [
@@ -71,7 +73,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         MatSnackBarModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        ClipboardModule
 
     ],
     exports: [
@@ -90,7 +93,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         MatChipsModule,
         MatTooltipModule,
         MatTableModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        ClipboardModule
+        
     ],
     providers: [
         MatDatepickerModule,

@@ -8,7 +8,8 @@ export class HttpTokenInterceptor implements HttpInterceptor {
    constructor() {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const accessToken = sessionStorage.getItem('access-token');
+    const accessToken = sessionStorage.getItem('access_token');
+    
     
     if (accessToken) {     
         request = request.clone({
@@ -16,6 +17,7 @@ export class HttpTokenInterceptor implements HttpInterceptor {
             Authorization: `Bearer ${accessToken}`
           }
         });
+        
       }      
       return next.handle(request);
     }

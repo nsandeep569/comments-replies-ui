@@ -17,4 +17,7 @@ export class LoginService {
     sessionStorage.removeItem('logged_in_user_name')
 
   }
+  performRegister(user){
+    return this.http.post('/api/register',user)
+  }
 }

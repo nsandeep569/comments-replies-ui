@@ -9,11 +9,11 @@ export interface User{
 }
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
   
   user:User;
@@ -28,12 +28,10 @@ export class LoginComponent implements OnInit {
   }
   onSubmit(){
     console.log(this.user.name,this.user.password)
-    this.loginService.performLogin(this.user).subscribe((data)=>{
+    this.loginService.performRegister(this.user).subscribe((data)=>{
     console.log(data)
     this.error=null
-    sessionStorage.setItem('access_token',data['access_token'])
-    sessionStorage.setItem('logged_in_user_name',this.user.name)
-    this.router.navigate(['/comments'])
+    alert('You have been successfully registered, please navigate to login for logging in ')
     }
     ,(err)=>{
       this.error=err.error.message

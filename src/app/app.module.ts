@@ -10,12 +10,16 @@ import { LoginComponent } from './login/login.component';
 import {AngularMaterialModule} from './modules/material.module'
 import { FormsModule } from '@angular/forms';
 import { HttpTokenInterceptor } from './http.token.interceptor';
+import { RegisterComponent } from './register/register.component';
+import { CommentBoxComponent } from './comment-box/comment-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CommentsComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent,
+    CommentBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -26,6 +30,7 @@ import { HttpTokenInterceptor } from './http.token.interceptor';
     HttpClientModule
 
   ],
+  entryComponents:[CommentBoxComponent],
   
   providers: [
     {
