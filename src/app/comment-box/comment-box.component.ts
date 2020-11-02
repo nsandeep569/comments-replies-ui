@@ -14,6 +14,7 @@ textData:string;
 @Input('name') name;
 @Output() clickedOnPostReply = new EventEmitter<boolean>();
 
+@Output() clickedOnCancelReply = new EventEmitter<boolean>();
   constructor(private cdr: ChangeDetectorRef,private commentReplyService:CommentReplyService) { }
 
   ngOnInit(): void {
@@ -36,6 +37,7 @@ textData:string;
   }
 
   cancelReply(){
+    this.clickedOnCancelReply.emit(true)
 
   }
 

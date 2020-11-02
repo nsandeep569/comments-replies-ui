@@ -26,7 +26,7 @@
           <div class="bg-white comment-reply-padding" *ngIf="loggedInUser">
             <div class="d-flex flex-row fs-12">
               <div
-                class="like p-2 cursor"
+                class="like p-2 cursor "
                 [ngClass]="{ selected: comments.commentLikedByLoggedInUser }"
                 (click)="likeDislikeComment(comments.id, true)"
               >
@@ -83,7 +83,7 @@
             >
               <div class="d-flex flex-row fs-12">
                 <div
-                  class="like p-2 cursor"
+                  class="like p-2 cursor left-pad-like-dislike"
                   [ngClass]="{ selected: replies.replyLikedByLoggedInUser }"
                   (click)="likeDislikeReply(comments.id,replies.id, true)"
                 >
@@ -124,12 +124,13 @@
               [disabled]="newComment == null || newComment == ''"
             >
               Post comment</button
-            ><button
+            >
+            <!-- <button
               class="btn btn-outline-primary btn-sm ml-1 shadow-none"
               type="button"
             >
               Cancel
-            </button>
+            </button> -->
           </div>
         </div>
       </div>

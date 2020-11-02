@@ -1,8 +1,8 @@
 import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
 import { CommentReplyService } from './../services/comment-reply.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ViewChild, ChangeDetectorRef, Input } from '@angular/core';
-import { Clipboard } from '@angular/cdk/clipboard';
+import { Router  } from '@angular/router';
+import {  ChangeDetectorRef } from '@angular/core';
+
 import {
   AfterViewInit,
   ViewContainerRef,
@@ -55,15 +55,14 @@ export class CommentsComponent implements OnInit {
     private commentReplyService: CommentReplyService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private clipboard: Clipboard,
     private componentFactoryResolver: ComponentFactoryResolver,
     private viewContainerRef: ViewContainerRef
   ) {}
 
   ngOnInit(): void {
-    console.log(this.clipboard);
+    
     this.loggedInUser = sessionStorage.getItem('logged_in_user_name');
-    console.log(this.loggedInUser);
+    
     this.getCommentsReplies();
   }
   ngAfterViewInit() {
@@ -71,8 +70,6 @@ export class CommentsComponent implements OnInit {
     // const containerRef = this.viewContainerRef;
     // containerRef.clear();
     // containerRef.createComponent(componentFactory);
-    console.log(this.dynamicInsertCommentBox);
-    console.log(this.dynamicInsertCommentBox);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       CommentBoxComponent
     );
@@ -88,9 +85,9 @@ export class CommentsComponent implements OnInit {
           )
         );
       });
-      console.log(this.dynamicCommentBoxes);
       this.dynamicCommentBoxes.forEach((element) => {
         element.name = this.loggedInUser;
+        element.cdr.detectChanges()
         // element.instance.commentId=this.loggedInUser
       });
     });
@@ -101,15 +98,15 @@ export class CommentsComponent implements OnInit {
     this.newComment = null;
     this.commentReplyService.getComments().subscribe((data) => {
       this.commentsFromService = data.comments;
-      console.log('Comments', this.commentsFromService);
+      
       this.likedCommentsByTheLoggedInUser();
       this.commentReplyService.getReplies().subscribe((data) => {
         this.repliesFromService = data.replies;
-        console.log('Replies', this.repliesFromService);
+        
         this.likedCommentsByTheLoggedInUser();
         this.likedRepliesByTheLoggedInUser();
         this.mergeReplyLikesDislikes()
-        console.log(this.commentsFromService)
+        
         
         // this.cdr.detectChanges()
       });
@@ -124,18 +121,14 @@ export class CommentsComponent implements OnInit {
             eachReplyToMainComment.name === this.loggedInUser &&
             eachReplyToMainComment.reply_type === 'L' && eachReplyToMainComment.parent_reply_id===null
           ) {
-            console.log(
-              eachComment.comment + ' was liked by ' + this.loggedInUser
-            );
+        
             eachComment.commentLikedByLoggedInUser = true;
           }
           if (
             eachReplyToMainComment.name === this.loggedInUser &&
             eachReplyToMainComment.reply_type === 'D' && eachReplyToMainComment.parent_reply_id===null
           ) {
-            console.log(
-              eachComment.comment + ' was disliked by ' + this.loggedInUser
-            );
+            
             eachComment.commentDislikedByLoggedInUser = true;
           }
         });
@@ -156,9 +149,7 @@ export class CommentsComponent implements OnInit {
                 && eachreply.name===this.loggedInUser
             ).length > 0
           ) {
-            console.log(
-              eachReplyToMainComment.id + ' was liked by ' + this.loggedInUser
-            );
+            
             eachReplyToMainComment.replyLikedByLoggedInUser = true;
           }
           if (
@@ -169,11 +160,7 @@ export class CommentsComponent implements OnInit {
                 && eachreply.name===this.loggedInUser
             ).length > 0
           ) {
-            console.log(
-              eachReplyToMainComment.id +
-                ' was disliked by ' +
-                this.loggedInUser
-            );
+            
             eachReplyToMainComment.replyDislikedByLoggedInUser = true;
           }
         });
@@ -199,7 +186,7 @@ export class CommentsComponent implements OnInit {
 
   likeDislikeReply(commentId,parentReplyId,likeDislike){
     let foundLikedOrDislikedReply: boolean = false;
-    console.log('called likeDislikeReply', commentId);
+    
     this.repliesFromService
       .filter(
         (eachReply) =>
@@ -209,25 +196,18 @@ export class CommentsComponent implements OnInit {
           eachReply.parent_reply_id===parentReplyId
       )
       .forEach((eachReply) => {
-        console.log(eachReply, likeDislike);
+        
         foundLikedOrDislikedReply = true;
         this.commentReplyService.deleteReply(eachReply.id).subscribe(
           (data) => {
-            console.log(
-              'Reply of type' +
-                eachReply.id +
-                ',' +
-                eachReply.reply_type +
-                ' is deleted'
-            );
+            
             this.getCommentsReplies();
           },
           (err) => console.log(err)
         );
       });
       if(!foundLikedOrDislikedReply){
-      console.log('in not found like dislike reply')
-    console.log('called likeDislikeReply', commentId);
+     
     this.commentReplyService
         .createReply(commentId, {
           reply_type: likeDislike ? 'L' : 'D',
@@ -252,7 +232,7 @@ this.commentsFromService.forEach(eachComment=>{
   eachComment.replies.forEach(eachReply=>{
     if(allreply.comment_id===eachReply.comment_id && eachReply.id === allreply.parent_reply_id
       && allreply.name===this.loggedInUser){
-        console.log('Found matching parent replies')
+        
         if(allreply.reply_type==='L')eachReply.replyLikedByLoggedInUser=true;
         if(allreply.reply_type==='D')eachReply.replyDislikedByLoggedInUser=true
       }
@@ -264,7 +244,7 @@ this.commentsFromService.forEach(eachComment=>{
   }
   likeDislikeComment(id, likeDislike) {
     let foundLikedOrDislikedComment: boolean = false;
-    console.log('called likeDislikeComment', id);
+    
     this.repliesFromService
       .filter(
         (eachReply) =>
@@ -275,17 +255,11 @@ this.commentsFromService.forEach(eachComment=>{
           
       )
       .forEach((eachReply) => {
-        console.log(eachReply, likeDislike);
+        
         foundLikedOrDislikedComment = true;
         this.commentReplyService.deleteReply(eachReply.id).subscribe(
           (data) => {
-            console.log(
-              'Reply of type' +
-                eachReply.id +
-                ',' +
-                eachReply.reply_type +
-                ' is deleted'
-            );
+           
             this.getCommentsReplies();
           },
           (err) => console.log(err)
@@ -300,7 +274,7 @@ this.commentsFromService.forEach(eachComment=>{
         .subscribe(
           (data) => this.getCommentsReplies(),
           (err) => {
-            console.log('error while like dislike', err),
+            
               alert('Error occured' + err);
           }
         );
@@ -317,10 +291,16 @@ this.commentsFromService.forEach(eachComment=>{
       this.dynamicCommentBoxes.forEach((element) => {
         element.name = this.loggedInUser;
         element.commentId = commentId;
+        element.cdr.detectChanges()
         element.clickedOnPostReply.subscribe((event) => {
-          console.log(event);
+          
           this.currentReplyCommentBoxId = null;
           this.getCommentsReplies();
+        });
+        element.clickedOnCancelReply.subscribe((event) => {
+          
+          this.currentReplyCommentBoxId = null;
+          
         });
       });
     });
